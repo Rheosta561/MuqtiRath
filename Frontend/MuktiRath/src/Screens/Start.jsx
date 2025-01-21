@@ -10,7 +10,7 @@ function Start() {
 
     }
     const handleLogIn = ()=>{
-        navigate('/logIn');
+        navigate('/login');
 
     }
   return (
