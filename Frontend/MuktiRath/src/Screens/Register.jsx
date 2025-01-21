@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import logo from './logo.png';
 import reglogo from './register.png';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -34,6 +35,7 @@ function Register() {
   const genderOptions = ['Women', 'Trans'];
 
   const handleEducationChange = (e) => {
+    setError(false);
     const value = e.target.value;
     setEducation(value);
     if (value.trim() === '') {
@@ -65,6 +67,7 @@ function Register() {
       );
     }
   };
+  const [error, setError] = useState(false);
 
   const handleHealthOptionClick = (option) => {
     setHealthProblem(option);
@@ -73,17 +76,33 @@ function Register() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    console.log("button clicked")
     e.preventDefault();
-    alert(
-      `Username: ${username}, Age: ${age}, Gender: ${gender}, Health Problem: ${healthProblem}, Education: ${education}, Short Story: ${shortStory}`
-    );
-    navigate('/setPassword');
+    const formdata = {
+      username,
+      age,
+      gender,
+      health: healthProblem,
+      education,
+      story: shortStory,
+    };
+  
+    try {
+      const response = await axios.post("https://muqtirath-wiegnite.onrender.com/createUser", formdata);
+      console.log(response);
+      const userId = response.data.newUser._id;
+      console.log("Success");
+      navigate(`/setPassword/${userId}`);
+      setError(false);
+    } catch (error) {
+      console.log("Something went wrong", error);
+      setError(true);
+    }
   };
 
   return (
     <div className="p-4">
-      {/* Logo Section */}
       <img
         src={logo}
         alt="Logo"
@@ -97,15 +116,10 @@ function Register() {
         />
       </div>
       <br />
-
-      {/* Title */}
       <div className="mx-auto text-5xl font-semibold text-center ">
         Registration
       </div>
-
-      {/* Form */}
       <form className="mt-8 max-w-lg mx-auto space-y-6" onSubmit={handleSubmit}>
-        {/* Username */}
         <div>
           <label className="block text-lg font-medium mb-2" htmlFor="username">
             What should we call you?
@@ -116,6 +130,7 @@ function Register() {
             name="username"
             placeholder="Enter your username"
             value={username}
+            required
             onChange={(e) => setUsername(e.target.value)}
             className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
@@ -131,6 +146,7 @@ function Register() {
             id="age"
             name="age"
             placeholder="Enter your age"
+            required
             value={age}
             onChange={(e) => setAge(e.target.value)}
             className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
@@ -146,6 +162,7 @@ function Register() {
           <select
             id="gender"
             name="gender"
+            required
             value={gender}
             onChange={(e) => setGender(e.target.value)}
             className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
@@ -225,8 +242,8 @@ function Register() {
             Tell us a short story about yourself (optional)
           </label>
           <textarea
-            id="shortStory"
-            name="shortStory"
+            id="story"
+            name="story"
             placeholder="Write a short story about yourself"
             value={shortStory}
             onChange={(e) => setShortStory(e.target.value)}
@@ -239,9 +256,11 @@ function Register() {
         <button
           type="submit"
           className="w-full bg-pink-800 text-white p-3 rounded-lg hover:bg-pink-600 transition-all"
+          onClick={handleSubmit}
         >
           Submit
         </button>
+        {error && <p className='text-red-900'>Username Already Exists</p>}
       </form>
     </div>
   );

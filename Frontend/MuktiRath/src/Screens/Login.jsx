@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import logo from './logo.png';
+import axios from 'axios'; // Ensure axios is installed
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -7,17 +9,40 @@ function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!username || !phone || !password) {
       setError('All fields are required!');
       setSuccessMessage('');
-    } else {
+      return;
+    }
+
+    try {
       setError('');
-      setSuccessMessage('Login successful!');
-      console.log(`Username: ${username}, Phone: ${phone}, Password: ${password}`);
-      // Further login logic like API call can go here
+      setSuccessMessage('');
+
+      // Send login request to the backend
+      const response = await axios.post('https://muqtirath-wiegnite.onrender.com/verify', {
+        username,
+        password,
+      });
+
+      if (response.status === 200) {
+        setSuccessMessage('Login successful!');
+        const userId = response.data.user._id;
+
+        console.log(response.data.user); 
+        navigate(`/dashboard/${userId}`);
+
+      }
+    } catch (err) {
+      if (err.response) {
+        setError(err.response.data.message);
+      } else {
+        setError('Something went wrong during the request.');
+      }
     }
   };
 
@@ -33,8 +58,6 @@ function Login() {
         <div className="h-24 w-full flex items-center justify-center text-xl text-gray-600">
           <img src={logo} className="h-full w-full object-cover scale-50" alt="Logo" />
         </div>
-
-        {/* Username */}
         <div>
           <label htmlFor="username" className="block text-lg font-medium mb-2">
             Username
@@ -49,8 +72,6 @@ function Login() {
             required
           />
         </div>
-
-        {/* Phone Number */}
         <div>
           <label htmlFor="phone" className="block text-lg font-medium mb-2">
             Phone Number
@@ -65,8 +86,6 @@ function Login() {
             required
           />
         </div>
-
-        {/* Password */}
         <div>
           <label htmlFor="password" className="block text-lg font-medium mb-2">
             Password
@@ -81,14 +100,10 @@ function Login() {
             required
           />
         </div>
-
-        {/* Error and Success Messages */}
         {error && <div className="text-red-500 text-sm">{error}</div>}
         {successMessage && (
           <div className="text-green-500 text-sm">{successMessage}</div>
         )}
-
-        {/* Submit Button */}
         <button
           type="submit"
           className="w-full bg-pink-800 text-white p-3 rounded-lg hover:bg-pink-600 transition-all"
