@@ -10,6 +10,7 @@ import Dashboard from './Screens/Dashboard'
 import UserChat from './Screens/UserChat'
 import Chatting from './Screens/Chatting'
 import Chatbot from './Screens/Chatbot'
+import Cause from './Screens/Cause'
 
 
 function App() {
@@ -28,6 +29,8 @@ function App() {
       <Route path ="/chat/:userId" element ={<UserChat/>} />
       <Route path ="/chats/:userId/:username" element ={<Chatting/>} />
       <Route path ="/chatbot" element ={<Chatbot/>} />
+      <Route path ="/cause" element ={<Cause/>} />
+
     </Routes>
     </BrowserRouter>
     </>

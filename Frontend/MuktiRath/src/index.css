@@ -25,3 +25,19 @@
 .intro {
   animation: slideInUp 2.5s ease-out;
 }
+.cause {
+  opacity: 0; /* Initial state */
+  transform: translateY(20px); /* Slight upward movement */
+  animation: fadeIn 2.5s ease-in-out forwards; /* Animation details */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
