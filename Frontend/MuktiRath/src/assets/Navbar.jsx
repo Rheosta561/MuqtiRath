@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
 import { AiOutlineUser, AiOutlineMessage } from 'react-icons/ai';
 import logo from '../Screens/logo.png';
+import { useNavigate } from 'react-router-dom';  // Import useNavigate from react-router-dom
 
-function Navbar() {
+function Navbar(props) {
+  const { Id } = props;  // Extract userId prop
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const navigate = useNavigate();  // Initialize useNavigate hook
+  
+  // Toggle the mobile menu
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  // Navigate to the chat page when the chat icon is clicked
+  const handleChatClick = () => {
+    navigate(`/chatbot`);  // Navigate to /chat/${userId}
   };
 
   return (
     <div>
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 rounded-lg  h-16 bg-white shadow-md border flex items-center justify-between px-4 md:px-6 z-50">
+      <nav className="fixed top-0 left-0 right-0 rounded-lg h-16 bg-white shadow-md border flex items-center justify-between px-4 md:px-6 z-50">
         {/* Hamburger Menu for Mobile */}
         <div className="md:hidden">
           <button
@@ -46,6 +55,7 @@ function Navbar() {
           <AiOutlineMessage
             size={24}
             className="text-gray-600 hover:text-blue-500 cursor-pointer transition-all"
+            onClick={handleChatClick}  
           />
           <div className="h-10 w-10 rounded-full bg-gray-200 overflow-hidden border cursor-pointer">
             <img

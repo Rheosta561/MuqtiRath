@@ -1,11 +1,13 @@
 import React from 'react'
 import Navbar from '../assets/Navbar'
 import CourseCard from '../assets/CourseCard'
+import { useParams } from 'react-router-dom'
 
 function Dashboard() {
+  const {userId} = useParams();
   return (
     <div>
-      <Navbar/>
+      <Navbar Id={userId}/>
       <br /><br />
       
       <div className=' h-fit w-screen p-2 mt-4'>

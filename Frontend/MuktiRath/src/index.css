@@ -6,3 +6,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.assistant {
+  animation: slideInUp 1s ease-out;
+}
+
+.intro {
+  animation: slideInUp 2.5s ease-out;
+}

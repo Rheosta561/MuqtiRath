@@ -7,6 +7,10 @@ import Password from './Screens/Password'
 import Login from './Screens/Login'
 import Dashboard from './Screens/Dashboard'
 
+import UserChat from './Screens/UserChat'
+import Chatting from './Screens/Chatting'
+import Chatbot from './Screens/Chatbot'
+
 
 function App() {
   return (
@@ -21,6 +25,9 @@ function App() {
       <Route path ="/setPassword/:userId" element ={<Password/>} />
       <Route path ="/login" element ={<Login/>} />
       <Route path ="/dashboard/:userId" element ={<Dashboard/>} />
+      <Route path ="/chat/:userId" element ={<UserChat/>} />
+      <Route path ="/chats/:userId/:username" element ={<Chatting/>} />
+      <Route path ="/chatbot" element ={<Chatbot/>} />
     </Routes>
     </BrowserRouter>
     </>
