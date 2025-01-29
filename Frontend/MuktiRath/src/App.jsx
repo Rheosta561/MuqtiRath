@@ -11,8 +11,8 @@ import UserChat from './Screens/UserChat'
 import Chatting from './Screens/Chatting'
 import Chatbot from './Screens/Chatbot'
 import Cause from './Screens/Cause'
-import OrgStart from './Organisations/orgStart'
-import GetStarted from './Organisations/GetStarted'
+import OrgStart from './Screens/Organisations/orgStart'
+import GetStarted from './Screens/Organisations/GetStarted'
 
 
 function App() {
