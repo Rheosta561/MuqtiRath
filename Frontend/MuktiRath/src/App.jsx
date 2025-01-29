@@ -11,6 +11,8 @@ import UserChat from './Screens/UserChat'
 import Chatting from './Screens/Chatting'
 import Chatbot from './Screens/Chatbot'
 import Cause from './Screens/Cause'
+import OrgStart from './Organisations/orgStart'
+import GetStarted from './Organisations/GetStarted'
 
 
 function App() {
@@ -30,6 +32,10 @@ function App() {
       <Route path ="/chats/:userId/:username" element ={<Chatting/>} />
       <Route path ="/chatbot" element ={<Chatbot/>} />
       <Route path ="/cause" element ={<Cause/>} />
+
+
+      <Route path ='/organisations'  element={<OrgStart/>}/>
+      <Route path ='/organisations/getStarted'  element={<GetStarted/>}/>
 
     </Routes>
     </BrowserRouter>

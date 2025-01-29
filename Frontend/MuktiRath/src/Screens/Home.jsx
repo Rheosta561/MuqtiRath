@@ -9,6 +9,9 @@ const handleStartedClick = ()=>{
   navigate('/cause');
 
 }
+const handleNgoClick =() =>{
+  navigate('/organisations');
+}
  
   return (
     <div className=' h-screen w-screen flex flex-col p-4 items-center justify-start'>
@@ -26,6 +29,7 @@ const handleStartedClick = ()=>{
         >
             Get Started
         </button>
+        <div className='mt-8 text-md'>For Ngo's Or Organisations | <button className='text-blue-900' onClick={handleNgoClick}>Click here</button></div>
         
     </div>
   )
