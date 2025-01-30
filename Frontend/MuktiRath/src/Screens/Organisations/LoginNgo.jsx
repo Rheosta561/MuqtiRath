@@ -28,7 +28,7 @@ const LoginNgo = () => {
     setSuccessMessage(null);
 
     try {
-      const response = await axios.post("http://localhost:3000/verifyAdmin", {
+      const response = await axios.post("https://muqtirath-wiegnite.onrender.com/verifyAdmin", {
         email: formData.email,
         password: formData.password,
       });

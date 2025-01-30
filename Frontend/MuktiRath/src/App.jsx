@@ -16,6 +16,7 @@ import GetStarted from './Screens/Organisations/GetStarted'
 import OrgStart from './Screens/Organisations/OrgStart'
 import SignUpNgo from './Screens/Organisations/SignUpNgo'
 import LoginNgo from './Screens/Organisations/LoginNgo'
+import OrgDashBoard from './Screens/Organisations/OrgDashBoard'
 
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
       <Route path ='/organisations/getStarted'  element={<GetStarted/>}/>
       <Route path ='/organisations/signup'  element={<SignUpNgo/>}/>
       <Route path ='/organisations/login'  element={<LoginNgo/>}/>
+      <Route path ='/organisations/dashboard/:userId'  element={<OrgDashBoard/>}/>
 
     </Routes>
     </BrowserRouter>
