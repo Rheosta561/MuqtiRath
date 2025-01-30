@@ -14,6 +14,8 @@ import Cause from './Screens/Cause'
 
 import GetStarted from './Screens/Organisations/GetStarted'
 import OrgStart from './Screens/Organisations/OrgStart'
+import SignUpNgo from './Screens/Organisations/SignUpNgo'
+import LoginNgo from './Screens/Organisations/LoginNgo'
 
 
 function App() {
@@ -37,6 +39,8 @@ function App() {
 
       <Route path ='/organisations'  element={<OrgStart/>}/>
       <Route path ='/organisations/getStarted'  element={<GetStarted/>}/>
+      <Route path ='/organisations/signup'  element={<SignUpNgo/>}/>
+      <Route path ='/organisations/login'  element={<LoginNgo/>}/>
 
     </Routes>
     </BrowserRouter>
