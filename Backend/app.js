@@ -6,6 +6,9 @@ const User = require('./Models/User');
 const Message = require('./Models/Message');
 const conn = require('./Connection/Connection');
 const  Skills = require('./Models/Skills');
+const xlsx = require('xlsx');
+const Ngos= require('./Models/Ngo'); 
+const Admin = require('./Models/Admin');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 require('dotenv').config();
 
@@ -16,22 +19,10 @@ app.use(express.urlencoded({ extended: true }));
 conn();
 
 app.get('/', (req, res) => {
-  res.send('Chat application is running');
+  res.send('working');
 });
 
-app.get('/search/:username', async (req, res) => {
-  try {
-    const username = req.params.username;
-    const foundUser = await User.findOne({ username });
-    if (!foundUser) {
-      return res.status(404).json({ message: 'No such user exists' });
-    }
-    res.status(200).json({ foundUser });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error searching for user', error: error.message });
-  }
-});
+
 
 app.post('/createUser', async (req, res) => {
   try {
@@ -89,42 +80,7 @@ app.post('/verify', async (req, res) => {
   }
 });
 
-app.post('/sendMessage', async (req, res) => {
-  try {
-    const { sender, recipient, content } = req.body;
-    const newMessage = await Message.create({ sender, recipient, content });
-    res.status(201).json({ message: 'Message sent successfully', newMessage });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error sending message', error: error.message });
-  }
-});
 
-app.get('/getMessages', async (req, res) => {
-  const { sender, recipient, page = 1, limit = 20 } = req.query;
-  try {
-    const messages = await Message.find({
-      $or: [
-        { sender, recipient },
-        { sender: recipient, recipient: sender },
-      ],
-    })
-      .sort({ timestamp: 1 })
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit));
-
-    res.status(200).json({ message: 'Messages retrieved successfully', messages });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error retrieving messages', error: error.message });
-  }
-});
-
-
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong', error: err.message });
-});
 
 
 // adding courses to database;
@@ -189,6 +145,131 @@ app.get('/recommendations/:userId' , async(req,res)=>{
   
 
 });
+
+// api to add ngos in the database 
+const filePath = 'ngos.xlsx';
+app.get('/addNgos' , async(req,res)=>{
+  try {
+    const workbook = xlsx.readFile(filePath);
+    const sheetName = workbook.SheetNames[0]; 
+    const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+    if (sheetData.length === 0) {
+      return res.status(400).json({ message: "Excel file is empty" });
+    }
+    const ngos = sheetData.map(row => ({
+      name: row.name,
+      description: row.description,
+      link: row.link,
+      phone: row.phone,
+      address: row.address,
+      jobs: row.jobs ? row.jobs.split(',').map(job => job.trim()) : [] 
+    }));
+
+    await Ngos.insertMany(ngos);
+
+    res.status(200).json({ message: "NGOs added successfully", ngos });
+
+
+
+    
+  } catch (error) {
+    res.status(404).json({
+      message:"something went wrong",
+      error:error.message
+    });
+    
+  }
+})
+
+app.get('/recommendJobs/:userId' , async(req,res)=>{
+  try {
+    // Fetch user details
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const ngos = await Ngos.find();
+    if (ngos.length === 0) {
+      return res.status(404).json({ message: "No NGOs available" });
+    }
+
+    const prompt = `
+      A user is looking for skill-building jobs in NGOs. Here are their details:
+      - Name: ${user.username}
+      - Age: ${user.age}
+      - Gender: ${user.gender}
+      - Education Level: ${user.education}
+      - Health Concerns: ${user.health.join(", ")}
+      - Life Story: ${user.story}
+
+      Below are the available NGOs and the jobs they offer:
+      ${ngos.map(ngo => `- ${ngo.name}: Jobs - ${ngo.jobs.join(", ")}`).join("\n")}
+
+      Based on the user's background, **return the names of the top 3-5 most suitable NGOs** based on the jobs they offer.
+      Format the response as a JSON array of NGO names like this:
+
+      ["NGO Name 1", "NGO Name 2", "NGO Name 3"]
+    `;
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const response = await model.generateContent(prompt);
+    const recommendedNgoNames = JSON.parse(response.response.text());
+    const recommendedNgos = await Ngos.find({ name: { $in: recommendedNgoNames } });
+
+    res.status(200).json({ recommendations: recommendedNgos });
+
+  } catch (error) {
+    console.error("Error generating recommendations:", error);
+    res.status(500).json({ message: "Something went wrong", error: error.message });
+  }
+});
+
+
+// creating the organisations Admin 
+app.post('/createAdmin' , async(req,res)=>{
+  try {
+    const {email,password}= req.body;
+  const hashedPassword = await bcrypt.hash(password,10);
+  const createdUser= await Admin.create({
+    email,
+    password:hashedPassword
+  });
+  res.status(200).json({createdUser});
+    
+  } catch (error) {
+    res.status(404).json({message:"Something went wrong ",
+      error:error.message
+    });
+    
+  }
+  
+
+
+});
+app.post('/verifyAdmin' , async(req,res)=>{
+  try {
+    const {email,password}= req.body;
+    const foundUser = await Admin.findOne({email:email});
+    if(!foundUser){
+      res.status(404).json({message:'User Not Found'})
+    }
+    if(await bcrypt.compare(password, foundUser.password)){
+      res.status(200).json({message:'Access Granted',
+        user:foundUser
+      });
+
+    }else{
+      res.status(404).json({message:'Access Denied'});
+    }
+    
+  } catch (error) {
+    res.status(404).json({message:'Something went wrong',
+      error:error.message
+    });
+    
+  }
+})
 
 
 const PORT = process.env.PORT || 3000;
