@@ -118,17 +118,14 @@ app.post('/skills', async(req,res)=>{
 // recommending the skills
 const genAI = new GoogleGenerativeAI(process.env.API);
 
-app.get('/recommendations/:userId' , async(req,res)=>{
+app.get('/recommendations/:userId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     const courses = await Skills.find({});
-    if (courses.length === 0) {
-      return res.status(404).json({ message: "No courses available" });
-    }
+    if (courses.length === 0) return res.status(404).json({ message: "No courses available" });
+
     const prompt = `
       A user is looking for skill-building courses. Here are their details:
       - Name: ${user.username}
@@ -141,25 +138,29 @@ app.get('/recommendations/:userId' , async(req,res)=>{
       Below are the available courses:
       ${courses.map(course => `- ${course.name}: ${course.desc}`).join("\n")}
 
-      Based on the user's background, **return the names of the top 3-5 most suitable courses** from the list. 
-      Format the response as a JSON array of course names like this:
-
+      Based on the user's background, **return only course names and don't repeat the courses** as a JSON array:
       ["Course Name 1", "Course Name 2", "Course Name 3"]
     `;
+
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     const response = await model.generateContent(prompt);
-    const recommendedCourseNames = JSON.parse(response.response.text());
-    const recommendedCourses = await Skills.find({ name: { $in: recommendedCourseNames } });
 
+    let recommendedCourseNames;
+    try {
+      recommendedCourseNames = JSON.parse(response.response.text());
+    } catch (e) {
+      return res.status(500).json({ message: "AI response parsing error", error: e.message });
+    }
+
+    const recommendedCourses = await Skills.find({ name: { $in: recommendedCourseNames } });
     res.status(200).json({ recommendations: recommendedCourses });
 
   } catch (error) {
     console.error("Error generating recommendations:", error);
     res.status(500).json({ message: "Something went wrong", error: error.message });
   }
-  
-
 });
+
 
 // api to add ngos in the database 
 const filePath = 'ngos.xlsx';
