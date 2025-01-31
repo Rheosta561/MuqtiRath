@@ -14,13 +14,9 @@ const handleCauseClick = ()=>{
    
     
   return (
-    <div className="min-h-screen w-screen relative ">
+    <div className="min-h-screen w-screen h-full relative bg-zinc-950 ">
       <GoogleTranslate/>
-      <img
-        src="https://img.freepik.com/free-photo/abstract-textured-backgound_1258-30471.jpg?t=st=1737577413~exp=1737581013~hmac=c15d1cbb2647918a33eba48294abd7642f806ceb4b5c29bbe54b8aa8db485a9d&w=1380"
-        className="object-cover h-full w-full brightness-50 contrast-125 absolute"
-        alt=""
-      />
+      
       <div className="text-white relative h-full w-full p-5 cause ">
         <h1 className="mx-auto text-center pt-5 text-6xl font-semibold bg-gradient-to-r from-zinc-50 via-pink-400 to-pink-900 text-transparent bg-clip-text">
           MuktiRath

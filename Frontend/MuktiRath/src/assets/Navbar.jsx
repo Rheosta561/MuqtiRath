@@ -42,7 +42,7 @@ function Navbar(props) {
           <a href="#home" className="hover:text-blue-500 transition-all">
             Home
           </a>
-          <a href="#about" className="hover:text-blue-500 transition-all">
+          <a href="/about" className="hover:text-blue-500 transition-all">
             About
           </a>
           <a href="#contact" className="hover:text-blue-500 transition-all">

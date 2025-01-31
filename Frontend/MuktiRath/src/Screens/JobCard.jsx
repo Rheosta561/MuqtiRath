@@ -2,7 +2,7 @@ import React from 'react'
 
 function JobCard(props) {
   return (
-    <div className='h-32 w-full bg-white rounded-lg border flex flex-col justify-between p-2'>
+    <div className='h-fit w-full bg-white rounded-lg border flex flex-col justify-between p-2'>
         <div>
         <p className='text-lg font-semibold text-zinc-800'>{props.job}</p>
         <p>Organization | <span className='font-semibold text-zinc-600'>{props.organizer}</span>
