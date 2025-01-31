@@ -40,12 +40,12 @@ function Navbar(props) {
           <img src={logo} className="h-11 w-36 object-cover" alt="Logo" />
         </div>
 
-        {/* Navigation Links (Hidden on mobile) */}
+
         <div className="hidden md:flex gap-8 text-gray-600 font-medium">
           <a href="#home" className="hover:text-blue-500 transition-all">
             Home
           </a>
-          <a href="/about" className="hover:text-blue-500 transition-all">
+          <a onClick={handleAboutClick} className="hover:text-blue-500 transition-all">
             About
           </a>
           <a href="#contact" className="hover:text-blue-500 transition-all">
