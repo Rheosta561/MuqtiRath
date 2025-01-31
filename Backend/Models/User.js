@@ -7,7 +7,8 @@ const userSchema = mongoose.Schema({
     health:{type:[String]},
     education:{type:String},
     story:{type:String},
-    password:{type:String}
+    password:{type:String},
+    phone:{type:Number}
 
 });
 

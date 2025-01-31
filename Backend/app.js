@@ -9,6 +9,7 @@ const  Skills = require('./Models/Skills');
 const xlsx = require('xlsx');
 const Ngos= require('./Models/Ngo'); 
 const Admin = require('./Models/Admin');
+const Orgs = require('./Models/Org');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 require('dotenv').config();
 
@@ -26,7 +27,7 @@ app.get('/', (req, res) => {
 
 app.post('/createUser', async (req, res) => {
   try {
-    const { username, age, gender, health, education, story } = req.body;
+    const { username, age, gender, health, education, story,phone } = req.body;
     const newUser = await User.create({
       username,
       age,
@@ -34,6 +35,7 @@ app.post('/createUser', async (req, res) => {
       health: health.split(','),
       education,
       story,
+      phone
     });
     res.status(201).json({ newUser });
   } catch (error) {
@@ -79,6 +81,19 @@ app.post('/verify', async (req, res) => {
     res.status(500).json({ message: 'Error verifying credentials', error: error.message });
   }
 });
+
+app.get('/users' , async(req,res)=>{
+  try {
+    const users = await User.find();
+    res.status(200).json({users});
+    
+  } catch (error) {
+    res.status(404).json({message:"Something went wrong",
+      error:error.message
+    });
+    
+  }
+})
 
 
 
@@ -269,6 +284,31 @@ app.post('/verifyAdmin' , async(req,res)=>{
     });
     
   }
+})
+
+
+// Onboarding the organisations
+
+app.post('/register' , async(req,res)=>{
+  try {
+    console.log('api endpoint accessed');
+    const{name , address, description, jobs , city , phone , orgId}= req.body;
+  const Org = await Orgs.findOneAndUpdate({name:name} , {name,address,description,
+    jobs:jobs.split(',') ,
+    city,
+    phone,
+    orgId
+  } , {new:true , upsert:true});
+  res.status(200).json({Org});
+    
+  } catch (error) {
+    res.status(404).json({message:'Something went wrong' ,
+      error:error.message
+    });
+
+    
+  }
+  
 })
 
 
