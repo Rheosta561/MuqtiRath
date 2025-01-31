@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Dhruvi from './Dhruvi.png';
+import GoogleTranslate from './GoogleTranslate';
 
 function Chatbot() {
   const [messages, setMessages] = useState([]); // Start with an empty messages array
@@ -13,6 +14,8 @@ function Chatbot() {
   };
 
   return (
+    <>
+    <GoogleTranslate/>
     <div className="h-screen w-screen flex flex-col justify-between">
       {/* Chat window */}
       <div className="chatwindow h-full border rounded-lg m-2 p-2 flex flex-col justify-between">
@@ -59,6 +62,8 @@ function Chatbot() {
         </div>
       </div>
     </div>
+    </>
+    
   );
 }
 

@@ -3,7 +3,7 @@ import { AiOutlineMessage } from 'react-icons/ai';
 
 function CourseCard(props) {
   return (
-    <div className="h-72 md:w-auto p-1 border-zinc-700 border flex flex-col rounded-lg  bg-white shadow-md">
+    <div className="h-fit md:w-auto p-1 border-zinc-700 border flex flex-col rounded-lg  bg-white shadow-md">
       {/* Card Image Section */}
       <div className="h-60 rounded-lg w-full border bg-zinc-300 shadow-sm  relative">
         <img
