@@ -9,7 +9,7 @@ function OrgNavBar() {
   };
 
   return (
-    <nav className="bg-gray-50 border-gray-200">
+    <nav className="bg-gray-50 border-gray-200 fixed z-50 top-0 right-0 left-0">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="https://flowbite.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src={logo} className="h-9 scale-150 rounded-lg" alt="Logo" />

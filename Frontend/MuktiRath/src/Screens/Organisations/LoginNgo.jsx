@@ -34,9 +34,9 @@ const LoginNgo = () => {
       });
 
       setSuccessMessage("Login successful!");
-      console.log(response.data.user._id); // You can store this ID in localStorage/sessionStorage for persistent login if needed.
+      console.log(response.data.user._id); 
       
-      // Redirect to the dashboard page
+      
       navigate(`/organisations/dashboard/${response.data.user._id}`);
     } catch (error) {
       setErrorMessage(error.response?.data?.message || "Something went wrong. Please try again.");

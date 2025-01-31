@@ -30,13 +30,12 @@ const SignUpNgo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate passwords
     if (formData.password !== formData.confirmPassword) {
       setErrorMessage("Passwords do not match");
       return;
     }
 
-    // Validate terms
+
     if (!formData.termsAccepted) {
       setErrorMessage("You must accept the terms and conditions");
       return;
@@ -47,14 +46,14 @@ const SignUpNgo = () => {
     setSuccessMessage(null);
 
     try {
-      const response = await axios.post("http://localhost:3000/createAdmin", {
+      const response = await axios.post("https://muqtirath-wiegnite.onrender.com/createAdmin", {
         email: formData.email,
         password: formData.password,
       });
       console.log(response.data.createdUser._id);
 
       setSuccessMessage("Account created successfully!");
-      navigate(`/organisations/dashboard/${response.data.createdUser._id}`);
+      navigate(`/organisations/registration/${response.data.createdUser._id}`);
 
     } catch (error) {
       setErrorMessage(error.response?.data?.message || "Something went wrong. Please try again.");

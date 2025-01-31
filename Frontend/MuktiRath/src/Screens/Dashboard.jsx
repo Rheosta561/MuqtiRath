@@ -1,80 +1,123 @@
-import React from 'react'
-import Navbar from '../assets/Navbar'
-import CourseCard from '../assets/CourseCard'
-import { useParams } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import Navbar from "../assets/Navbar";
+import CourseCard from "../assets/CourseCard";
+import { useParams } from "react-router-dom";
+import GoogleTranslate from "./GoogleTranslate";
+import JobCard from "./JobCard";
+import HelplineCard from "./HelplineCard";
 
 function Dashboard() {
-  const {userId} = useParams();
+  const { userId } = useParams();
+  const [courses, setCourses] = useState([]); 
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null);
+  const [jobsLoading, setJobsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      try {
+        const response = await fetch(`https://muqtirath-wiegnite.onrender.com/recommendations/${userId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch recommendations");
+        }
+        const data = await response.json();
+        setCourses(data.recommendations);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch(`https://muqtirath-wiegnite.onrender.com/recommendJobs/${userId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch job recommendations");
+        }
+        const data = await response.json();
+        setJobs([...data.recommendations.ngos, ...data.recommendations.orgs]);
+      } catch (err) {
+        console.error("Error fetching jobs:", err);
+      } finally {
+        setJobsLoading(false);
+      }
+    };
+
+    fetchRecommendations();
+    fetchJobs();
+  }, [userId]);
+
   return (
     <div>
-      <Navbar Id={userId}/>
+      <Navbar Id={userId} />
       <br /><br />
-      
-      <div className=' h-fit w-screen p-2 mt-4'>
-        <div className='border h-full rounded border-zinc-400 p-2 bg-[url(https://img.freepik.com/free-vector/hand-drawn-spring-wallpaper_23-2148829855.jpg?t=st=1737539091~exp=1737542691~hmac=cae9d7dfcef744058a2b3a87ddbdec406db9f4ad5e9a51469e5f603d621c676d&w=2000)] bg-center bg-cover '>
-          <h1 className='text-5xl font-semibold'>Recommended Skills </h1>
-          
-          <p className='text-sm text-zinc-700'>Specially Crafted Skills for You </p>
-          <p className='text-sm text-zinc-600'>Curated with love </p>
-          <hr className='border mt-2 border-zinc-700 rounded-lg' />
-          <div className='h-fit w-full  mt-2  grid grid-cols-1 md:grid-cols-3 gap-4'>
-            <CourseCard title="Tailoring & Fashion Design" description="Learn stitching, pattern making, and garment creation to start your tailoring business or work in fashion." image="https://media.gettyimages.com/id/1279988363/photo/female-textile-workers-standing-together-in-solidarity-at-factory.jpg?s=612x612&w=0&k=20&c=owiqqVaRxO6xaQVASeS7dCNXMLqI3_CaCSojMApMOVY=" />
-            <CourseCard 
-  title="Beauty & Wellness" 
-  description="Master makeup, hairstyling, skincare, and spa techniques for salon jobs or freelance work." 
-  image="https://media.gettyimages.com/id/1357162123/photo/organic-bio-cosmetics-healthy-concept-with-petri-dishes-with-natural-plants-and-beauty.jpg?s=612x612&w=0&k=20&c=0zXNKNj7Q-DEXasZiR-dWY9W0k05ocINGOIMTKCRjgo=" 
-/>
+      <GoogleTranslate />
 
-<CourseCard 
-  title="Digital Marketing Basics" 
-  description="Learn social media, SEO, and content creation to secure remote or freelance marketing jobs." 
-  image="https://media.gettyimages.com/id/1214772075/vector/digital-networking-cloud-computing.jpg?s=612x612&w=0&k=20&c=6AFWXqgwDg4A-o1RIvgu7Oa9u38O0lep_ZGoubHqzZc=" 
-/>
+      <div className="h-fit w-screen p-2 mt-4">
+        <div className="border h-full rounded-lg  p-2 bg-zinc-50 bg-center bg-cover">
+          <h1 className="text-5xl font-semibold">Recommended Skills</h1>
+          <p className="text-sm text-zinc-700">Specially Crafted Skills for You</p>
+          <p className="text-sm text-zinc-600">Curated with love</p>
+          <hr className="border mt-2 border-zinc-700 rounded-lg" />
 
-<CourseCard 
-  title="Culinary Arts & Baking" 
-  description="Develop cooking and baking skills to work in restaurants or start a food business." 
-  image="https://media.gettyimages.com/id/1307977267/vector/planet-earth.jpg?s=612x612&w=0&k=20&c=wZlsVHP7opC1hhnm3ZgQLaFSpCZrGPN_hCJ5xsBc8tg=" 
-/>
+          {loading ? (
+            <p className="text-center text-lg font-semibold mt-5">Loading recommendations...</p>
+          ) : error ? (
+            <p className="text-center text-red-500 font-semibold mt-5">{error}</p>
+          ) : courses.length === 0 ? (
+            <p className="text-center text-lg mt-5">No recommendations available.</p>
+          ) : (
+            <div className="h-fit w-full mt-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+              {courses.map((course) => (
+                <CourseCard
+                  key={course._id}
+                  title={course.name}
+                  description={course.desc}
+                  image={course.image || "https://via.placeholder.com/300"} 
+                  link={course.link}
+                />
+              ))}
+            </div>
+          )}
+        </div>
 
-<CourseCard 
-  title="Jewelry Making & Crafts" 
-  description="Create handmade jewelry and crafts to sell online or at local markets." 
-  image="https://media.gettyimages.com/id/1403250565/photo/making-jewelry-with-beads.jpg?s=612x612&w=0&k=20&c=vx-fTcjyUVZu-FWmgrsuHdX5F44G0gcNnamNeoz2pr4=" 
-/>
+        <div className="border p-2 mt-2 rounded-lg bg-gray-100">
+          <h1 className="text-5xl font-semibold">Jobs</h1>
+          <h5>Powered by <span className="font-semibold">Mukti<span className="text-pink-900">Rath</span></span></h5>
+          <div className="border w-full mt-2 rounded-lg p-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+            {jobsLoading ? (
+              <p className="text-center text-lg font-semibold mt-5">Loading job recommendations...</p>
+            ) : jobs.length > 0 ? (
+              jobs.map((job) => (
+                <JobCard key={job._id} job={job.jobs[0]} organizer={job.name} phone={job.contact || "N/A"} />
+              ))
+            ) : (
+              <p>No job recommendations available.</p>
+            )}
+          </div>
+        </div>
 
-<CourseCard 
-  title="Hygiene & Sanitation Awareness" 
-  description="Learn essential hygiene practices to promote health and prevent diseases in your community." 
-  image="https://media.gettyimages.com/id/1225772238/photo/male-healthcare-worker-washing-hands.jpg?s=612x612&w=0&k=20&c=GLKMpy2m5nxiEyIZO85I8UYetQMqAR72W3NrHODKnlU=" 
-/>
-
-<CourseCard 
-  title="Health Camp Facilitation" 
-  description="Learn to organize free health camps, including cancer screenings and wellness initiatives." 
-  image="https://media.gettyimages.com/id/1473559425/photo/female-medical-practitioner-reassuring-a-patient.jpg?s=612x612&w=0&k=20&c=kGbm-TE5qdppyyiteyip7_CzKLktyPrRuWD4Zz2EcqE=" 
-/>
-
-<CourseCard 
-  title="First Aid & Emergency Response" 
-  description="Train in basic first aid and emergency care to assist in medical situations." 
-  image="https://media.gettyimages.com/id/1437515877/vector/ambulance-concept-healthcare-in-cartoon-style-doctors-hand-holding-a-portable-first-aid-kit.jpg?s=612x612&w=0&k=20&c=PDkxQKuw5uHk1bmIbZINYlESURwYr18_6YzxCadJAaw=" 
-/>
-
-<CourseCard 
-  title="Free Cancer Awareness & Screening" 
-  description="Participate in free cancer screening programs to raise awareness and ensure early detection." 
-  image="https://media.gettyimages.com/id/183579195/photo/pink-breast-cancer-awareness-ribbon-with-copy-space.jpg?s=612x612&w=0&k=20&c=hyXFkEUAU_ws6R5LUvJ_gwxvbnmNGfF-8i-y0wtHLlM=" 
-/>
-
-
-
-
+        <div className="border p-2 mt-2 rounded-lg bg-gray-100">
+          <h1 className="text-5xl font-semibold">HelpLines</h1>
+          <h5>Researched by <span className="font-semibold">Mukti<span className="text-pink-900">Rath</span></span></h5>
+          <div className="border w-full mt-2 rounded-lg p-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <HelplineCard name="Women’s Helpline (All India)" desc="24/7 helpline for women in distress, including domestic violence and harassment." phone="1091" />
+            <HelplineCard name="National Commission for Women (NCW)" desc="Provides legal aid and grievance redressal for women facing discrimination or violence." phone="7827170170" />
+            <HelplineCard name="Sakhi One-Stop Centre" desc="Supports survivors of gender-based violence with counseling, legal aid, and shelter." phone="181" />
+            <HelplineCard name="Childline India (For Girls & Children)" desc="24/7 helpline for children in distress, including abuse and trafficking cases." phone="1098" />
+            <HelplineCard name="Delhi Commission for Women (DCW)" desc="Helpline for women in Delhi facing violence, abuse, or legal issues." phone="181" />
+            <HelplineCard name="Police Emergency Helpline" desc="For immediate police assistance in cases of violence or harassment." phone="112" />
+            <HelplineCard name="Shakti Shalini" desc="Offers shelter, legal aid, and emotional support for domestic violence survivors." phone="10920" />
+            <HelplineCard name="Snehi Mental Health Support" desc="Counseling services for women facing mental health issues due to abuse or trauma." phone="9582208181" />
+            <HelplineCard name="Aks Foundation" desc="Support for survivors of domestic violence, stalking, and sexual harassment." phone="9999999559" />
+            <HelplineCard name="My Choices Foundation" desc="Dedicated to preventing human trafficking and domestic violence against women." phone="18002100188" />
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Dashboard
+export default Dashboard;

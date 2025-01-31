@@ -16,7 +16,7 @@ function Chatbot() {
     <div className="h-screen w-screen flex flex-col justify-between">
       {/* Chat window */}
       <div className="chatwindow h-full border rounded-lg m-2 p-2 flex flex-col justify-between">
-        {/* Messages */}
+
         <div className="flex flex-col gap-2 overflow-auto">
           {messages.map((message, index) => (
             <div
@@ -48,7 +48,6 @@ function Chatbot() {
         </div>
       </div>
 
-      {/* Dhruvi Bot Introduction */}
       <div className="flex h-48 border items-end relative">
         <img src={Dhruvi} alt="" className="h-full -mb-1 assistant relative z-50" />
         <div className="h-4/5 border border-zinc-900 shadow-md intro bg-teal-100 w-full rounded relative -ml-8 mr-2 p-4 pl-8">

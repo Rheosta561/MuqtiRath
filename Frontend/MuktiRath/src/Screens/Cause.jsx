@@ -13,7 +13,7 @@ const handleCauseClick = ()=>{
    
     
   return (
-    <div className="h-screen w-screen relative ">
+    <div className="min-h-screen w-screen relative ">
       <img
         src="https://img.freepik.com/free-photo/abstract-textured-backgound_1258-30471.jpg?t=st=1737577413~exp=1737581013~hmac=c15d1cbb2647918a33eba48294abd7642f806ceb4b5c29bbe54b8aa8db485a9d&w=1380"
         className="object-cover h-full w-full brightness-50 contrast-125 absolute"
