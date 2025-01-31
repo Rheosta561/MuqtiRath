@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import logo from '../../Screens/logo.png';
+import { useNavigate } from 'react-router-dom';
 
 function OrgNavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const handleAboutClick = ()=>{
+    navigate('/about');
+  }
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -59,8 +64,8 @@ function OrgNavBar() {
             </li>
             <li>
               <a
-                href="/about"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                
+                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0" onClick={handleAboutClick}
               >
                 About
               </a>

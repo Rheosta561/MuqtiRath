@@ -26,7 +26,7 @@ function About() {
         <li><strong className="text-sm">Imparting Financial Awareness:</strong> Educating on budgeting, saving, banking, and digital wallet use.</li>
       </ul>
       
-      <h2 className="text-3xl font-semibold mt-6 text-zinc-900">Why MuktiRath?</h2>
+      <h2 className="text-3xl font-semibold mt-6 text-zinc-900">Why Mukti<span className="text-pink-900">Rath</span>?</h2>
       <p className="mt-2 text-sm text-gray-700">
         Although gender equity is gaining attention, women in prostitution and transgender individuals remain neglected despite their historical significance in Indian society. MuktiRath aims to address their struggles and rights for true empowerment.
       </p>
