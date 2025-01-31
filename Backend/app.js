@@ -229,7 +229,7 @@ app.get('/recommendJobs/:userId', async (req, res) => {
       ${orgs.map(org => `- ${org.name}: Jobs - ${org.jobs.join(", ")}`).join("\n")}
 
       Based on the user's background, **return the names of the top 3-5 most suitable NGOs and Organizations** based on the jobs they offer.
-      Format the response as a JSON object like this:
+      Format the response as a JSON object like this separated by comma :
 
       {
         "ngos": ["NGO Name 1", "NGO Name 2", "NGO Name 3"],
