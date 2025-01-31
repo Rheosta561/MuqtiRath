@@ -198,21 +198,21 @@ app.get('/addNgos' , async(req,res)=>{
   }
 })
 
-app.get('/recommendJobs/:userId' , async(req,res)=>{
+app.get('/recommendJobs/:userId', async (req, res) => {
   try {
-    // Fetch user details
     const user = await User.findById(req.params.userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
+    const orgs = await Orgs.find();
     const ngos = await Ngos.find();
-    if (ngos.length === 0) {
-      return res.status(404).json({ message: "No NGOs available" });
+
+    if (orgs.length === 0 && ngos.length === 0) {
+      return res.status(404).json({ message: "No job opportunities available" });
     }
 
     const prompt = `
-      A user is looking for skill-building jobs in NGOs. Here are their details:
+      A user is looking for skill-building jobs in NGOs and organizations. Here are their details:
       - Name: ${user.username}
       - Age: ${user.age}
       - Gender: ${user.gender}
@@ -220,20 +220,31 @@ app.get('/recommendJobs/:userId' , async(req,res)=>{
       - Health Concerns: ${user.health.join(", ")}
       - Life Story: ${user.story}
 
-      Below are the available NGOs and the jobs they offer:
+      Below are the available NGOs and Organizations, along with the jobs they offer:
+
+      NGOs:
       ${ngos.map(ngo => `- ${ngo.name}: Jobs - ${ngo.jobs.join(", ")}`).join("\n")}
 
-      Based on the user's background, **return the names of the top 3-5 most suitable NGOs** based on the jobs they offer.
-      Format the response as a JSON array of NGO names like this:
+      Organizations:
+      ${orgs.map(org => `- ${org.name}: Jobs - ${org.jobs.join(", ")}`).join("\n")}
 
-      ["NGO Name 1", "NGO Name 2", "NGO Name 3"]
+      Based on the user's background, **return the names of the top 3-5 most suitable NGOs and Organizations** based on the jobs they offer.
+      Format the response as a JSON object like this:
+
+      {
+        "ngos": ["NGO Name 1", "NGO Name 2", "NGO Name 3"],
+        "orgs": ["Org Name 1", "Org Name 2"]
+      }
     `;
+
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     const response = await model.generateContent(prompt);
-    const recommendedNgoNames = JSON.parse(response.response.text());
-    const recommendedNgos = await Ngos.find({ name: { $in: recommendedNgoNames } });
+    const recommendedNames = JSON.parse(response.response.text());
 
-    res.status(200).json({ recommendations: recommendedNgos });
+    const recommendedNgos = await Ngos.find({ name: { $in: recommendedNames.ngos || [] } });
+    const recommendedOrgs = await Orgs.find({ name: { $in: recommendedNames.orgs || [] } });
+
+    res.status(200).json({ recommendations: { ngos: recommendedNgos, orgs: recommendedOrgs } });
 
   } catch (error) {
     console.error("Error generating recommendations:", error);
@@ -242,7 +253,7 @@ app.get('/recommendJobs/:userId' , async(req,res)=>{
 });
 
 
-// creating the organisations Admin 
+
 app.post('/createAdmin' , async(req,res)=>{
   try {
     const {email,password}= req.body;
