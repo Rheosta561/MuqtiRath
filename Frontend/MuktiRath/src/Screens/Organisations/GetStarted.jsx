@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import GoogleTranslate from '../GoogleTranslate';
 
 function GetStarted() {
     const navigate = useNavigate();
@@ -10,7 +11,9 @@ function GetStarted() {
         navigate('/organisations/login');
     }
   return (
-    <div className='h-screen w-screen flex items-center justify-center p-1'>
+    <>
+   
+     <div className='h-screen w-screen flex items-center justify-center p-1'>
         <div className='h-2/3 md:h-fit w-full border flex flex-col md:flex-row gap-2 p-2 rounded-lg bg-gray-200 items-center justify-center md:w-fit'>
         <div className='w-full md:w-80 h-64 flex flex-col rounded-lg   relative overflow-hidden shadow-sm border-zinc-800'>
             <img src="https://images.unsplash.com/photo-1613399421095-41f5c68e9f8c?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bmdvfGVufDB8fDB8fHww" className='h-full w-full object-cover rounded-lg brightness-50 contrast-125 absolute' alt="" />
@@ -31,6 +34,8 @@ function GetStarted() {
         </div>
         </div>
     </div>
+    </>
+   
   )
 }
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import logo from './logo.png';
 import { useNavigate, useNavigationType, useParams } from 'react-router-dom';
 import axios from 'axios';
+import GoogleTranslate from './GoogleTranslate';
 
 function Password() {
   const [phone, setPhone] = useState('');
@@ -43,7 +44,9 @@ function Password() {
   };
 
   return (
-    <div className="p-4 h-screen w-screen">
+    <>
+    <GoogleTranslate/>
+        <div className="p-4 h-screen w-screen">
       <div className="text-center text-5xl mt-20 font-semibold">
         Let's Create a Password
       </div>
@@ -128,6 +131,8 @@ function Password() {
         </button>
       </form>
     </div>
+    </>
+
   );
 }
 
