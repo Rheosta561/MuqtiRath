@@ -18,6 +18,8 @@ import LoginNgo from './Screens/Organisations/LoginNgo'
 import OrgDashBoard from './Screens/Organisations/OrgDashBoard'
 import NgoReg from './Screens/Organisations/NgoReg'
 import About from './Screens/About'
+import Contact from './Screens/Contact'
+
 
 
 function App() {
@@ -37,6 +39,7 @@ function App() {
       <Route path ="/chatbot" element ={<Chatbot/>} />
       <Route path ="/cause" element ={<Cause/>} />
       <Route path ="/about" element ={<About/>} />
+      <Route path = '/contact' element ={<Contact/>} />
 
 
 
