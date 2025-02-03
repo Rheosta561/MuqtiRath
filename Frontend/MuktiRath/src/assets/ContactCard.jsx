@@ -4,7 +4,7 @@ function ContactCard(props) {
   return (
     <div className='flex flex-col border h-44 p-2 w-full rounded-lg'>
         <div className='flex gap-2 h-full w-full'>
-            <div className='w-36 h-36 bg-zinc-300 border rounded-full'>
+            <div className='w-32 md:w-36 h-36 bg-zinc-300 border rounded-full'>
                 <img src={props.image} className='h-full w-full rounded-full' alt="" />
             </div>
             <div className='h-full w-2/3 border rounded-lg flex flex-col p-2'>
