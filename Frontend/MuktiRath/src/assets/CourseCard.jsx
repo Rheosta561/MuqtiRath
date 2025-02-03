@@ -1,11 +1,19 @@
 import React from 'react';
 import { AiOutlineMessage } from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
+
 
 function CourseCard(props) {
+  const navigate = useNavigate();
+  const handleBotClick = ()=>{
+    navigate('/chatbot');
+
+  }
   return (
     <div className="h-fit md:w-auto p-1 border-zinc-700 border flex flex-col rounded-lg  bg-white shadow-md">
-      {/* Card Image Section */}
+      <a href={props.link}>
       <div className="h-60 rounded-lg w-full border bg-zinc-300 shadow-sm  relative">
+        
         <img
           src={props.image}
           alt="Course"
@@ -18,13 +26,13 @@ function CourseCard(props) {
           </p>
         </div>
       </div>
-
-      {/* Card Footer Section */}
+      </a>
+    
       <div className="flex p-2 text-lg justify-between items-center">
         <div>
-          {props.title} | <span className='text-zinc-600'>Free</span>  | <span className="text-blue-700 font-semibold  cursor-pointer"><a href={props.link}>Link</a></span>
+          <span className='font-semibold text-sm'>{props.title} </span>| <span className='text-zinc-600 font-semibold text-sm'>Free</span>  | <span className="text-blue-700 font-semibold text-sm  cursor-pointer"><a href={props.link}>Link</a></span>
         </div>
-        <button className="flex items-center gap-2 px-2 py-2  text-zinc-950 rounded-lg scale-150 hover:text-blue-700 transition-all">
+        <button className="flex items-center gap-2 px-2 py-2  text-zinc-950 rounded-lg scale-150 hover:text-blue-700 transition-all" onClick={handleBotClick}>
             
           <AiOutlineMessage size={20} />
         </button>

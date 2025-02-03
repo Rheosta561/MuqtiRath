@@ -28,8 +28,8 @@ const handleCauseClick = ()=>{
         <p className="mx-4 text-xs text-center text-zinc-400 mt-8">
   Muktirath is a platform dedicated to empowering the sex workers of India's red-light areas by providing them with opportunities to rebuild their lives and reclaim their choices. Inspired by the sentiment "I wish I had a choice," Muktirath strives to offer freedom, dignity, and resources to those who have long been denied a voice. Through education, skill-building programs, and community support, we aim to create a future where everyone has the power to choose their path.
 </p>
-<div className="h-2/3 mt-8  w-full flex flex-col items-center ">
-<img src="https://images.unsplash.com/photo-1520981269471-2935a5567932?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cG9vciUyMHdvbWFuJTIwSW5kaWFufGVufDB8fDB8fHww" alt="" className="h-2/3 w-2/3 object-cover" />
+<div className="h-2/3 mt-8  w-full flex flex-col items-center  ">
+<img src="https://images.unsplash.com/photo-1520981269471-2935a5567932?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cG9vciUyMHdvbWFuJTIwSW5kaWFufGVufDB8fDB8fHww" alt="" className="h-96 w-2/3 object-cover" />
 <div className="text-center text-xs mt-2 ">" Sex workers in India endure poverty, exploitation, societal stigma, and violence. Limited access to healthcare, education, and legal protection worsens their plight, leaving them marginalized and trapped in cycles of vulnerability and despair. "</div>
 <button className="p-2 bg-pink-950 rounded-lg text-zinc-200 mt-4 transition-all hover:bg-pink-600" onClick={handleCauseClick}>Bring Change</button>
     

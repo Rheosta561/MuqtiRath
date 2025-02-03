@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import logo from './logo.png';
-import axios from 'axios'; // Ensure axios is installed
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
@@ -9,6 +9,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [loading, setLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -20,10 +21,9 @@ function Login() {
     }
 
     try {
+      setLoading(true); // Start loading
       setError('');
       setSuccessMessage('');
-
-      // Send login request to the backend
       const response = await axios.post('https://muqtirath-wiegnite.onrender.com/verify', {
         username,
         password,
@@ -32,10 +32,8 @@ function Login() {
       if (response.status === 200) {
         setSuccessMessage('Login successful!');
         const userId = response.data.user._id;
-
-        console.log(response.data.user); 
+        console.log(response.data.user);
         navigate(`/dashboard/${userId}`);
-
       }
     } catch (err) {
       if (err.response) {
@@ -43,6 +41,8 @@ function Login() {
       } else {
         setError('Something went wrong during the request.');
       }
+    } finally {
+      setLoading(false); // Stop loading after request completes
     }
   };
 
@@ -101,14 +101,42 @@ function Login() {
           />
         </div>
         {error && <div className="text-red-500 text-sm">{error}</div>}
-        {successMessage && (
-          <div className="text-green-500 text-sm">{successMessage}</div>
-        )}
+        {successMessage && <div className="text-green-500 text-sm">{successMessage}</div>}
+        
         <button
           type="submit"
-          className="w-full bg-pink-800 text-white p-3 rounded-lg hover:bg-pink-600 transition-all"
+          className={`w-full bg-pink-800 text-white p-3 rounded-lg transition-all ${
+            loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-pink-600'
+          }`}
+          disabled={loading}
         >
-          Login
+          {loading ? (
+            <div className="flex items-center justify-center space-x-2">
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+              <span>Loading...</span>
+            </div>
+          ) : (
+            'Login'
+          )}
         </button>
       </form>
     </div>
