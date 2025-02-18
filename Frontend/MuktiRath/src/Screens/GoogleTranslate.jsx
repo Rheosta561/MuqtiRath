@@ -44,7 +44,7 @@ const GoogleTranslate = () => {
 
       
       {showDropdown && (
-        <div className="absolute bottom-14 right-0 w-48 z-30 bg-white border rounded-md shadow-lg">
+        <div className="absolute bottom-14 right-0 w-48 z-50 bg-white border rounded-md shadow-lg">
           {languages.map((lang) => (
             <button
               key={lang.code}
