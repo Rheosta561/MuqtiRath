@@ -118,48 +118,7 @@ app.post('/skills', async(req,res)=>{
 // recommending the skills
 const genAI = new GoogleGenerativeAI(process.env.API);
 
-app.get('/recommendations/:userId', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
 
-    const courses = await Skills.find({});
-    if (courses.length === 0) return res.status(404).json({ message: "No courses available" });
-
-    const prompt = `
-      A user is looking for skill-building courses. Here are their details:
-      - Name: ${user.username}
-      - Age: ${user.age}
-      - Gender: ${user.gender}
-      - Education Level: ${user.education}
-      - Health Concerns: ${user.health.join(", ")}
-      - Life Story: ${user.story}
-
-      Below are the available courses:
-      ${courses.map(course => `- ${course.name}: ${course.desc}`).join("\n")}
-
-      Based on the user's background, **return only course names and don't repeat the courses** as a JSON array:
-      ["Course Name 1", "Course Name 2", "Course Name 3"]
-    `;
-
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const response = await model.generateContent(prompt);
-
-    let recommendedCourseNames;
-    try {
-      recommendedCourseNames = JSON.parse(response.response.text());
-    } catch (e) {
-      return res.status(500).json({ message: "AI response parsing error", error: e.message });
-    }
-
-    const recommendedCourses = await Skills.find({ name: { $in: recommendedCourseNames } });
-    res.status(200).json({ recommendations: recommendedCourses });
-
-  } catch (error) {
-    console.error("Error generating recommendations:", error);
-    res.status(500).json({ message: "Something went wrong", error: error.message });
-  }
-});
 
 
 // api to add ngos in the database 
@@ -204,6 +163,7 @@ app.get('/recommendJobs/:userId', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
     const orgs = await Orgs.find();
     const ngos = await Ngos.find();
 
@@ -212,37 +172,39 @@ app.get('/recommendJobs/:userId', async (req, res) => {
     }
 
     const prompt = `
-      A user is looking for skill-building jobs in NGOs and organizations. Here are their details:
-      - Name: ${user.username}
-      - Age: ${user.age}
-      - Gender: ${user.gender}
-      - Education Level: ${user.education}
-      - Health Concerns: ${user.health.join(", ")}
-      - Life Story: ${user.story}
+    A user is looking for skill-building jobs in NGOs and organizations. Here are their details:
+    - Name: ${user.username}
+    - Age: ${user.age}
+    - Gender: ${user.gender}
+    - Education Level: ${user.education}
+    - Health Concerns: ${user.health.join(", ")}
+    - Life Story: ${user.story}
+    
+    Below are the available NGOs and Organizations, along with the jobs they offer:
+    
+    NGOs:
+    ${ngos.map(ngo => `- ${ngo.name}: Jobs - ${ngo.jobs.join(", ")}`).join("\n")}
+    
+    Organizations:
+    ${orgs.map(org => `- ${org.name}: Jobs - ${org.jobs.join(", ")}`).join("\n")}
+    
+    ### **Strict Instructions**:
+    1. **Analyze** the user's background.
+    2. **Identify** the top 3-5 most suitable NGOs and Organizations.
+    3. **Return only their names, separated by commas** (e.g., NGO1, NGO2, Org1, Org2).
+    4. **Do not** include any extra text, explanations, or formatting.
 
-      Below are the available NGOs and Organizations, along with the jobs they offer:
-
-      NGOs:
-      ${ngos.map(ngo => `- ${ngo.name}: Jobs - ${ngo.jobs.join(", ")}`).join("\n")}
-
-      Organizations:
-      ${orgs.map(org => `- ${org.name}: Jobs - ${org.jobs.join(", ")}`).join("\n")}
-
-      Based on the user's background, **return the names of the top 3-5 most suitable NGOs and Organizations** based on the jobs they offer.
-      Format the response as a JSON object like this separated by comma :
-
-      {
-        "ngos": ["NGO Name 1", "NGO Name 2", "NGO Name 3"],
-        "orgs": ["Org Name 1", "Org Name 2"]
-      }
+    ### **Response Format Example**:
+    CRY, Sankalp Foundation, Smile Foundation, Asha, Red Cross
     `;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const response = await model.generateContent(prompt);
-    const recommendedNames = JSON.parse(response.response.text());
 
-    const recommendedNgos = await Ngos.find({ name: { $in: recommendedNames.ngos || [] } });
-    const recommendedOrgs = await Orgs.find({ name: { $in: recommendedNames.orgs || [] } });
+    const recommendedNames = response.response.text().split(",").map(name => name.trim());
+
+    const recommendedNgos = await Ngos.find({ name: { $in: recommendedNames.filter(name => ngos.some(ngo => ngo.name === name)) } });
+    const recommendedOrgs = await Orgs.find({ name: { $in: recommendedNames.filter(name => orgs.some(org => org.name === name)) } });
 
     res.status(200).json({ recommendations: { ngos: recommendedNgos, orgs: recommendedOrgs } });
 
@@ -251,6 +213,7 @@ app.get('/recommendJobs/:userId', async (req, res) => {
     res.status(500).json({ message: "Something went wrong", error: error.message });
   }
 });
+
 
 
 
