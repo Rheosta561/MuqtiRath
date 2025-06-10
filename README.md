@@ -12,6 +12,7 @@ Through this platform, women can:
 - Take the first steps toward freedom and self-reliance.
 
 > 🌟 **Special Mention** at Microsoft Gurgaon and IGDTUW Delhi.
+> Developer : Rheosta561(https://github.com/Rheosta561)
 
 ---
 
